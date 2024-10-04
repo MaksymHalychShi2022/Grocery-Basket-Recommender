@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рекомендації AI для Покупців</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Рекомендації для покупців</h1>
+        <p>Обери персонажа, щоб побачити, які товари порекомендує модель:</p>
+        
+        <div class="character-selection">
+            <div class="character" id="woman" onclick="selectCharacter('woman')">
+                <img src="pictures/man.jpg" alt="Жінка">
+                <!-- <p>Жінка</p> -->
+            </div>
+            <div class="character" id="man" onclick="selectCharacter('man')">
+                <img src="pictures/woman.jpg" alt="Чоловік">
+                <!-- <p>Чоловік</p> -->
+            </div>
+            <div class="character" id="child" onclick="selectCharacter('child')">
+                <img src="pictures/man2.jpg" alt="Дитина">
+                <!-- <p>Дитина</p> -->
+            </div>
+        </div>
+
+        <div id="recommendations" class="recommendations">
+            <!-- Рекомендації будуть тут -->
+        </div>
+    </div>
+
+    <script>
+        function selectCharacter(character) {
+            const recommendations = document.getElementById('recommendations');
+            recommendations.innerHTML = '';
+
+            // Очищаємо існуючі рекомендації
+            let items = [];
+            if (character === 'woman') {
+                items = ['Сумочка', 'Парфуми', 'Шарф'];
+            } else if (character === 'man') {
+                items = ['Годинник', 'Кросівки', 'Рюкзак'];
+            } else if (character === 'child') {
+                items = ['Іграшковий автомобіль', 'Кубики', 'Книжка для дітей'];
+            }
+
+            // Створюємо картки з товарами та додаємо анімації
+            items.forEach(item => {
+                const itemCard = document.createElement('div');
+                itemCard.className = 'item-card';
+                itemCard.textContent = item;
+                recommendations.appendChild(itemCard);
+
+                anime({
+                    targets: itemCard,
+                    translateY: [50, 0],
+                    opacity: [0, 1],
+                    duration: 800,
+                    easing: 'easeOutElastic'
+                });
+            });
+        }
+    </script>
+</body>
+</html>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    .character-selection {
+        display: flex;
+        justify-content: space-around;
+        margin: 20px 0;
+    }
+    .character {
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+    .character:hover {
+        transform: scale(1.1);
+    }
+    .character img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+    }
+    .recommendations {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .item-card {
+        background: #ffdd57;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+    }
+    .item-card:hover {
+        background: #ffc107;
+    }
+</style>
