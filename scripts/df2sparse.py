@@ -73,25 +73,25 @@ if __name__ == "__main__":
 	parser.add_argument(
 		'--interaction_path',
 		type=str,
-		default='../data/extracted/user_product_interaction.csv',
+		default='data/extracted/user_product_interaction.csv',
 		help='Path to the user-product interaction CSV file'
 	)
 	parser.add_argument(
 		'--sparse_matrix_path',
 		type=str,
-		default='../data/extracted/user_product_interaction_sparse.mtx',
+		default='data/extracted/user_product_interaction_sparse.mtx',
 		help='Path to save the sparse matrix in .mtx format'
 	)
 	parser.add_argument(
 		'--user_mapping_path',
 		type=str,
-		default='../data/extracted/user_mapping.csv',
+		default='data/extracted/user_mapping.csv',
 		help='Path to save the user mapping CSV file'
 	)
 	parser.add_argument(
 		'--product_mapping_path',
 		type=str,
-		default='../data/extracted/product_mapping.csv',
+		default='data/extracted/product_mapping.csv',
 		help='Path to save the product mapping CSV file'
 	)
 

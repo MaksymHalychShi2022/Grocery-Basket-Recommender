@@ -59,19 +59,19 @@ if __name__ == "__main__":
 	parser.add_argument(
 		'--orders_path',
 		type=str,
-		default='../data/raw/orders.csv',
+		default='data/raw/orders.csv',
 		help='Path to the orders.csv file'
 	)
 	parser.add_argument(
 		'--order_products_path',
 		type=str,
-		default='../data/raw/order_products__prior.csv',
+		default='data/raw/order_products__prior.csv',
 		help='Path to the order_products.csv file'
 	)
 	parser.add_argument(
 		'--output_path',
 		type=str,
-		default='../data/extracted/user_product_interaction.csv',
+		default='data/extracted/user_product_interaction.csv',
 		help='Path to save the user-product interaction CSV'
 	)
 

@@ -64,19 +64,19 @@ if __name__ == "__main__":
 	parser.add_argument(
 		'--input_path',
 		type=str,
-		default='../data/extracted/user_product_interaction_sparse.mtx',
+		default='data/extracted/user_product_interaction_sparse.mtx',
 		help="Path to the input sparse matrix (.mtx format)"
 	)
 	parser.add_argument(
 		'--user_mapping_path',
 		type=str,
-		default='../data/extracted/user_mapping.csv',
+		default='data/extracted/user_mapping.csv',
 		help="Path to the user mapping CSV file"
 	)
 	parser.add_argument(
 		'--output_path',
 		type=str,
-		default='../data/extracted/user_clusters.csv',
+		default='data/extracted/user_clusters.csv',
 		help="Path to save the clustering results CSV"
 	)
 	parser.add_argument(
