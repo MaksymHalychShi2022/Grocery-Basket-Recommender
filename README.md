@@ -17,6 +17,21 @@ python df2sparse.py
 python cluster.py
 ```
 
+## Train model for competition
+
+```bash
+cd scripts
+ 
+# extract features from prior data
+python extract_features.py
+
+# train model on extracted features
+python train.py
+
+# generate submission file
+python submit.py
+```
+
 # Reference
 
 - https://github.com/ashleve/lightning-hydra-template
