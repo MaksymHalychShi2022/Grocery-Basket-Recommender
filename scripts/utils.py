@@ -1,9 +1,43 @@
 import os
-from typing import List, Union
+from typing import List, Union, Optional
 
+import joblib
 import pandas as pd
 
 FEATURES_PATH = '../data/features/'
+MODELS_PATH = '../models/'
+
+
+def load_model(model_name: Optional[str] = None):
+	"""
+	Load a model from MODELS_PATH. If model_name is None, load the latest model.
+
+	Args:
+		model_name (Optional[str]): Name of the model file to load. If None, load the latest model.
+
+	Returns:
+		Loaded model object.
+	"""
+
+	if model_name:
+		# Load the specified model
+		model_path = os.path.join(MODELS_PATH, model_name)
+	else:
+		# Get all model files in the directory
+		model_files = [
+			f.replace("model_", "").replace(".pkl", "")
+			for f in os.listdir(MODELS_PATH)
+			if f.startswith("model_") and f.endswith(".pkl")
+		]
+
+		if not model_files:
+			raise FileNotFoundError("No models found in the specified directory.")
+
+		# Pick the latest model
+		model_path = os.path.join(MODELS_PATH, sorted(model_files)[-1])
+
+	# Load the model
+	return joblib.load(model_path)
 
 
 def load_features_with_prefix(prefix: str, merge_on: Union[List[str], str]) -> pd.DataFrame:
@@ -39,11 +73,11 @@ def load_features() -> pd.DataFrame:
 		pd.DataFrame: A merged DataFrame containing all features.
 	"""
 	# Load user-product features
-	up_features = load_features_with_prefix('up_', ['user_id', 'product_id'])
+	up_features = load_features_with_prefix('up_', merge_on=['user_id', 'product_id'])
 	# Load user features
-	u_features = load_features_with_prefix('u_', 'user_id')
+	u_features = load_features_with_prefix('u_', merge_on='user_id')
 	# Load product features
-	p_features = load_features_with_prefix('p_', 'product_id')
+	p_features = load_features_with_prefix('p_', merge_on='product_id')
 
 	# Merge user and product features into user-product features
 	features = up_features.merge(

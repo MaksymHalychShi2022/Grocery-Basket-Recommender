@@ -2,13 +2,11 @@
 import os
 from datetime import datetime
 
-import joblib
 import pandas as pd
 
-from utils import load_features
+from utils import load_features, load_model
 
 RAW_DATA_PATH = '../data/raw/'
-MODELS_PATH = '../models/'
 SUBMIT_PATH = '../submit/'
 THRESHOLD = 0.5  # for probability of been reordered
 
@@ -29,7 +27,7 @@ df = orders_test[['user_id']].merge(
 df.set_index(['user_id', 'product_id'], inplace=True)
 #%%
 print("Loading model...")
-model = joblib.load(os.path.join(MODELS_PATH, 'model_20241227_085936.pkl'))
+model = load_model()
 #%%
 print("Predicting proba...")
 y_pred = model.predict_proba(df)
