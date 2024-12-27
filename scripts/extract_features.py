@@ -2,10 +2,8 @@
 import os
 import pandas as pd
 
-os.chdir("..")
-
-RAW_DATA_PATH = 'data/raw/'
-FEATURES_PATH = 'data/features/'
+RAW_DATA_PATH = '../data/raw/'
+FEATURES_PATH = '../data/features/'
 
 # Ensure the output directory exists
 os.makedirs(FEATURES_PATH, exist_ok=True)

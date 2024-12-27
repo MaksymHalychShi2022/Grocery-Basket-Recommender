@@ -8,28 +8,20 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score, precision_score, recall_score
 from sklearn.model_selection import train_test_split
 
-os.chdir("..")
+from utils import load_features
 
-RAW_DATA_PATH = 'data/raw/'
-FEATURES_PATH = 'data/features/'
-MODELS_PATH = 'models/'
+RAW_DATA_PATH = '../data/raw/'
+MODELS_PATH = '../models/'
 
 # Ensure the output directory exists
 os.makedirs(MODELS_PATH, exist_ok=True)
 #%%
+print("Loading orders...")
 orders = pd.read_csv(os.path.join(RAW_DATA_PATH, 'orders.csv'))
 order_products_train = pd.read_csv(os.path.join(RAW_DATA_PATH, 'order_products__train.csv'))
-
-up_total_orders = pd.read_csv(os.path.join(FEATURES_PATH, 'up_total_orders.csv'))
-u_total_orders = pd.read_csv(os.path.join(FEATURES_PATH, 'u_total_orders.csv'))
-p_total_orders = pd.read_csv(os.path.join(FEATURES_PATH, 'p_total_orders.csv'))
 #%%
-df = up_total_orders.merge(
-	u_total_orders, on='user_id', how='left'
-)
-df = df.merge(
-	p_total_orders, on='product_id', how='left'
-)
+print("Loading features...")
+df = load_features()
 df = df.merge(
 	orders[orders.eval_set == 'train'][['user_id', 'order_id']],
 	on='user_id',
@@ -49,12 +41,13 @@ y = df['reordered']
 
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
 #%%
-model = RandomForestClassifier(n_estimators=10, random_state=42)
+print("Training model...")
+model = RandomForestClassifier(n_estimators=1, random_state=42)
 model.fit(X_train, y_train)
 #%%
+print("Evaluating model...")
 y_pred = model.predict(X_val)
 
-# Evaluate the model
 f1 = f1_score(y_val, y_pred)
 precision = precision_score(y_val, y_pred)
 recall = recall_score(y_val, y_pred)
@@ -63,6 +56,7 @@ print(f"F1 Score: {f1:.4f}")
 print(f"Precision: {precision:.4f}")
 print(f"Recall: {recall:.4f}")
 #%%
+print("Saving model...")
 save_path = os.path.join(MODELS_PATH, f"model_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pkl")
 joblib.dump(model, save_path)
 print(f"Model saved as {save_path}.")
