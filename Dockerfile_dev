@@ -1,9 +1,14 @@
 # Use an official Ubuntu base image
-FROM ubuntu:22.04
+FROM --platform=$BUILDPLATFORM ubuntu:22.04 AS base
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=C.UTF-8
+
+# Set build arguments for platform detection
+ARG BUILDPLATFORM
+ARG TARGETPLATFORM
+ARG TARGETARCH
 
 # Update the package index and install basic tools
 RUN apt-get update && apt-get install -y \
@@ -15,10 +20,16 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Quarto
-RUN wget https://github.com/quarto-dev/quarto-cli/releases/download/v1.7.5/quarto-1.7.5-linux-amd64.deb \
-    && dpkg -i quarto-1.7.5-linux-amd64.deb \
-    && rm quarto-1.7.5-linux-amd64.deb
+# Install Quarto - conditional on architecture
+RUN if [ "$TARGETARCH" = "amd64" ]; then \
+        wget https://github.com/quarto-dev/quarto-cli/releases/download/v1.7.5/quarto-1.7.5-linux-amd64.deb; \
+    elif [ "$TARGETARCH" = "arm64" ]; then \
+        wget https://github.com/quarto-dev/quarto-cli/releases/download/v1.7.5/quarto-1.7.5-linux-arm64.deb; \
+    else \
+        echo "Unsupported architecture: $TARGETARCH" && exit 1; \
+    fi && \
+    dpkg -i quarto-1.7.5-linux-*.deb && \
+    rm quarto-1.7.5-linux-*.deb
 
 # Install LaTeX (minimal setup)
 RUN apt-get update && apt-get install -y \
