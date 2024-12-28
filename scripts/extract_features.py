@@ -1,12 +1,17 @@
 #%%
 import os
+import platform
 
 import numpy as np
 import pandas as pd
 from scipy import stats
 
-RAW_DATA_PATH = '../data/raw/'
-FEATURES_PATH = '../data/features/'
+if platform.system() == "Darwin":  # macOS
+	RAW_DATA_PATH = 'data/raw/'
+	FEATURES_PATH = 'data/features/'
+else:
+	RAW_DATA_PATH = '../data/raw/'
+	FEATURES_PATH = '../data/features/'
 
 # Ensure the output directory exists
 os.makedirs(FEATURES_PATH, exist_ok=True)
