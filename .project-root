@@ -1,0 +1,6 @@
+# This file marks the root directory of the project.
+# It is used by autoroot or other tools to identify the project's base folder.
+# Do not modify or delete this file unless you know what you're doing.
+
+# More Information:
+# https://github.com/ashleve/autoroot
