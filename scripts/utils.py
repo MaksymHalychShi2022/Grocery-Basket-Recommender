@@ -34,7 +34,7 @@ def load_model(model_name: Optional[str] = None):
 			raise FileNotFoundError("No models found in the specified directory.")
 
 		# Pick the latest model
-		model_path = os.path.join(MODELS_PATH, sorted(model_files)[-1])
+		model_path = os.path.join(MODELS_PATH, f"model_{sorted(model_files)[-1]}.pkl")
 
 	# Load the model
 	return joblib.load(model_path)
