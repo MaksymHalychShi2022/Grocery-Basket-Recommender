@@ -1,13 +1,21 @@
 #%%
 import os
+import platform
 from datetime import datetime
 
 import pandas as pd
 
 from utils import load_features, load_model
 
-RAW_DATA_PATH = '../data/raw/'
-SUBMIT_PATH = '../submit/'
+
+if platform.system() == "Darwin":  # macOS
+	RAW_DATA_PATH = 'data/raw/'
+	SUBMIT_PATH = 'submit/'
+else:
+	RAW_DATA_PATH = '../data/raw/'
+	SUBMIT_PATH = '../submit/'
+
+
 THRESHOLD = 0.5  # for probability of been reordered
 
 # Ensure the output directory exists

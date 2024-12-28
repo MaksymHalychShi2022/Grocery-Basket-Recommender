@@ -1,11 +1,17 @@
 import os
+import platform
 from typing import List, Union, Optional
 
 import joblib
 import pandas as pd
 
-FEATURES_PATH = '../data/features/'
-MODELS_PATH = '../models/'
+
+if platform.system() == "Darwin":  # macOS
+	FEATURES_PATH = 'data/features/'
+	MODELS_PATH = 'models/'
+else:
+	FEATURES_PATH = '../data/features/'
+	MODELS_PATH = '../models/'
 
 
 def load_model(model_name: Optional[str] = None):
