@@ -71,8 +71,9 @@ u_reorder_ratio.to_csv(
 	os.path.join(FEATURES_PATH, 'u_reorder_ratio.csv'),
 	index=False
 )
+# %% md
+# # product features
 # %%
-# product features
 print("Extracting 'p_total_orders'")
 p_total_orders = orders_prior.groupby('product_id')['order_id'].count().to_frame('p_total_orders').reset_index()
 
@@ -81,7 +82,25 @@ p_total_orders.to_csv(
 	index=False
 )
 # %%
-# user-product features
+print("Extracting 'p_reorder_ratio'")
+p_reorder_ratio = orders_prior.groupby(by='product_id')['reordered'].mean().to_frame('p_reorder_ratio').reset_index()
+
+p_reorder_ratio.to_csv(
+	os.path.join(FEATURES_PATH, 'p_reorder_ratio.csv'),
+	index=False
+)
+# %%
+print("Extracting 'p_avg_cart_position'")
+p_avg_cart_position = orders_prior.groupby(by='product_id')['add_to_cart_order'].mean().to_frame(
+	'p_avg_cart_position').reset_index()
+
+p_avg_cart_position.to_csv(
+	os.path.join(FEATURES_PATH, 'p_avg_cart_position.csv'),
+	index=False
+)
+# %% md
+# # user-product features
+# %%
 print("Extracting 'up_total_orders'")
 up_total_orders = orders_prior.groupby(['user_id', 'product_id'])['order_id'].count().to_frame(
 	'up_total_orders').reset_index()
