@@ -110,3 +110,45 @@ up_total_orders.to_csv(
 	index=False
 )
 # %%
+print("Extracting 'up_reorder_ratio'")
+# Finding when the user has bought a product the first time.
+up_reorder_ratio = orders_prior.groupby(by=['user_id', 'product_id'])['order_number'].min().to_frame(
+	'up_first_order').reset_index()
+
+# Add u_total_orders
+up_reorder_ratio = up_reorder_ratio.merge(u_total_orders, on='user_id', how='left')
+
+# Calculating the order range between first and last.
+# The +1 includes in the difference the first order were the product has been purchased
+up_reorder_ratio['range'] = up_reorder_ratio.u_total_orders - up_reorder_ratio.up_first_order + 1
+
+# Add u_total_orders
+up_reorder_ratio = up_total_orders.merge(up_reorder_ratio, on=['user_id', 'product_id'], how='left')
+
+# Calculating the ratio.
+up_reorder_ratio['up_reorder_ratio'] = up_reorder_ratio.up_total_orders / up_reorder_ratio.range
+up_reorder_ratio = up_reorder_ratio[["user_id", "product_id", "up_reorder_ratio"]]
+up_reorder_ratio.to_csv(
+	os.path.join(FEATURES_PATH, 'up_reorder_ratio.csv'),
+	index=False
+)
+# %%
+print("Extracting 'up_last_five'")
+# Calculate number of order but from bask
+orders_prior['order_number_back'] = orders_prior.groupby(by=['user_id'])['order_number'].transform(
+	'max') - orders_prior.order_number + 1
+# Take only last 5 orders for each user
+up_last_five = orders_prior.loc[orders_prior.order_number_back <= 5][
+	['order_id', 'user_id', 'product_id', 'order_number_back']]
+# Count total in last five
+up_last_five = up_last_five.groupby(by=['user_id', 'product_id'])['order_id'].aggregate('count').to_frame(
+	'up_last_five').reset_index()
+
+# Normalize
+up_last_five.up_last_five /= 5
+
+up_last_five.to_csv(
+	os.path.join(FEATURES_PATH, 'up_last_five.csv'),
+	index=False
+)
+# %%
