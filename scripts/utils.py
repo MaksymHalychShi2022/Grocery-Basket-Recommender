@@ -4,7 +4,7 @@ from typing import List, Union, Optional
 import joblib
 import pandas as pd
 
-from config import MODELS_PATH, FEATURES_PATH
+from config import MODELS_PATH, FEATURES_PATH, RAW_DATA_PATH
 
 
 def load_model(model_name: Optional[str] = None):
@@ -86,3 +86,26 @@ def load_features() -> pd.DataFrame:
 	)
 
 	return features
+
+
+def load_train_dataset() -> pd.DataFrame:
+	orders = pd.read_csv(os.path.join(RAW_DATA_PATH, 'orders.csv'))
+	order_products_train = pd.read_csv(os.path.join(RAW_DATA_PATH, 'order_products__train.csv'))
+
+	df = load_features()
+
+	df = df.merge(
+		orders[orders.eval_set == 'train'][['user_id', 'order_id']],
+		on='user_id',
+		how='left'
+	)
+
+	df = df.merge(
+		order_products_train[['product_id', 'order_id', 'reordered']],
+		on=['product_id', 'order_id'],
+		how='left'
+	)
+	df['reordered'] = df['reordered'].fillna(0)
+	df.drop(['order_id'], axis=1, inplace=True)
+	df.set_index(['user_id', 'product_id'], inplace=True)
+	return df

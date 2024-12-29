@@ -10,7 +10,7 @@ Analysis (Visualization, Forecasting) of Sales in Supermarkets
 python scripts/extract_features.py
 
 # train model on extracted features
-python scripts/train.py
+python python scripts/train_lightGBM.py 
 
 # generate submission file
 python scripts/submit.py

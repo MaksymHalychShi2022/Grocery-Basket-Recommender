@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier
 
 from config import RAW_DATA_PATH, MODELS_PATH
-from scripts.utils import load_features
+from scripts.utils import load_train_dataset
 
 # Ensure the output directory exists
 os.makedirs(MODELS_PATH, exist_ok=True)
@@ -20,22 +20,8 @@ orders = pd.read_csv(os.path.join(RAW_DATA_PATH, 'orders.csv'))
 order_products_train = pd.read_csv(os.path.join(RAW_DATA_PATH, 'order_products__train.csv'))
 
 # %%
-print("Loading features...")
-df = load_features()
-df = df.merge(
-	orders[orders.eval_set == 'train'][['user_id', 'order_id']],
-	on='user_id',
-	how='left'
-)
-df = df.merge(
-	order_products_train[['product_id', 'order_id', 'reordered']],
-	on=['product_id', 'order_id'],
-	how='left'
-)
-df.set_index(['user_id', 'product_id'], inplace=True)
-df.drop(['order_id'], axis=1, inplace=True)
-df['reordered'] = df['reordered'].fillna(0)
-
+print("Loading dataset...")
+df = load_train_dataset()
 # %%
 X = df.drop(['reordered'], axis=1)
 y = df['reordered']
