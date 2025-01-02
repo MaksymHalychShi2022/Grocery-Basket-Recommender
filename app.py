@@ -1,45 +1,75 @@
+import os.path
+
 import gradio as gr
+import joblib
+import pandas as pd
+from config import RAW_DATA_PATH
 
-from src.mock_grocery_basket_recommender import MockGroceryBasketRecommender
+from scripts.utils import load_features_with_prefix
 
-# Instantiate the recommender
-recommender = MockGroceryBasketRecommender()
+up_features = load_features_with_prefix("up_", merge_on=['user_id', 'product_id'])
+up_features.fillna(0, inplace=True)
+u_features = load_features_with_prefix('u_', merge_on='user_id')
+p_features = load_features_with_prefix('p_', merge_on='product_id')
 
-# Gradio interface
-with gr.Blocks() as app:
-	gr.Markdown("# Grocery Basket Recommender")
-	gr.Markdown("Search for items to add to your basket. Get a single recommendation based on the items.")
+products = pd.read_csv(os.path.join(RAW_DATA_PATH, "products.csv"))
 
-	basket = gr.State([])  # To maintain the list of items in the basket
+current_user_id = None
+current_user_features = None
 
-	with gr.Row():
-		with gr.Column():
-			search_box = gr.Textbox(label="Search Items", placeholder="Type to search...")
-			dropdown = gr.Dropdown(choices=recommender.available_items[:10], label="Suggestions", interactive=True)
-			add_button = gr.Button("Add to Basket")
-			basket_list = gr.Textbox(label="Your Basket", interactive=False)
-		with gr.Column():
-			recommend_button = gr.Button("Recommend Item")
-			recommendation = gr.Textbox(label="Recommended Item", interactive=False)
+current_model_path = None
+current_model = None
 
 
-	@search_box.change(inputs=search_box, outputs=dropdown)
-	def filter_items(query):
-		query = query.lower()
-		filtered_items = [item for item in recommender.available_items if query in item]
+# Define the mock recommendation function
+def recommend(user_id, model_path, probability_threshold):
+	global current_user_id, current_user_features, current_model_path, current_model
 
-		return gr.update(value=None, choices=filtered_items[:10])
+	if int(user_id) != current_user_id:
+		current_user_id = int(user_id)
+		current_user_features = up_features[up_features.user_id == current_user_id].merge(
+			u_features[u_features.user_id == current_user_id], on='user_id', how='left'
+		).merge(
+			p_features, on='product_id', how='left'
+		).drop(
+			'user_id', axis=1
+		).set_index(
+			'product_id'
+		)
+		current_user_features.fillna(0, inplace=True)
+
+	if model_path != current_model_path:
+		current_model_path = model_path
+		current_model = joblib.load(model_path)
+
+	predictions = pd.DataFrame()
+	predictions["product_id"] = current_user_features.index
+	predictions = predictions.merge(products[["product_id", "product_name"]], on="product_id", how="left")
+	predictions["probability"] = current_model.predict_proba(current_user_features)[:, 1].round(2)
+
+	return predictions[predictions.probability >= probability_threshold]
 
 
-	# Add selected item from dropdown to the basket
-	@add_button.click(inputs=[dropdown, basket], outputs=[basket_list, search_box])
-	def add_item_to_basket(item, basket):
-		if item and item.lower() in recommender.available_items and item not in basket:
-			basket.append(item)
-		return basket, ""
+# Gradio Interface
+input_description = "Enter 'user_id':"
+output_description = "Recommended Products:"
+model_file_description = "Upload model file:"
+probability_threshold_description = "Set probability threshold (0.0 to 1.0):"
 
+interface = gr.Interface(
+	fn=recommend,
+	inputs=[
+		gr.Textbox(label=input_description, placeholder="e.g., 123"),
+		gr.File(label=model_file_description, type="filepath"),
+		gr.Slider(label=probability_threshold_description, minimum=0.0, maximum=1.0, step=0.01, value=0.5),
+	],
+	outputs=gr.Dataframe(label=output_description),
+	title="Instacart Product Recommendation Demo",
+	description=(
+		"Provide user ID to get personalized recommendations. Upload a model file and set a probability threshold."
+	)
+)
 
-	# Generate a single recommendation
-	recommend_button.click(recommender.recommend, inputs=basket, outputs=recommendation)
-
-app.launch()
+# Run the Gradio app
+if __name__ == "__main__":
+	interface.launch()
