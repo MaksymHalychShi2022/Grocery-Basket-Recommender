@@ -7,25 +7,28 @@ import pandas as pd
 from config import MODELS_PATH, FEATURES_PATH, RAW_DATA_PATH
 
 
-def load_model(model_name: Optional[str] = None):
+def load_model(model_name: Optional[str] = None, model_type: str = "lightgbm"):
 	"""
 	Load a model from MODELS_PATH. If model_name is None, load the latest model.
 
 	Args:
 		model_name (Optional[str]): Name of the model file to load. If None, load the latest model.
+		model_type (str): Supported model types: "random_forest", "lightgbm", "xgboost". Defaults to "lightgbm".
 
 	Returns:
 		Loaded model object.
 	"""
 
+	models_dir = os.path.join(MODELS_PATH, model_type)
+
 	if model_name:
 		# Load the specified model
-		model_path = os.path.join(MODELS_PATH, model_name)
+		model_path = os.path.join(models_dir, model_name)
 	else:
 		# Get all model files in the directory
 		model_files = [
 			f.replace("model_", "").replace(".pkl", "")
-			for f in os.listdir(MODELS_PATH)
+			for f in os.listdir(models_dir)
 			if f.startswith("model_") and f.endswith(".pkl")
 		]
 
@@ -33,7 +36,7 @@ def load_model(model_name: Optional[str] = None):
 			raise FileNotFoundError("No models found in the specified directory.")
 
 		# Pick the latest model
-		model_path = os.path.join(MODELS_PATH, f"model_{sorted(model_files)[-1]}.pkl")
+		model_path = os.path.join(models_dir, f"model_{sorted(model_files)[-1]}.pkl")
 
 	# Load the model
 	return joblib.load(model_path)

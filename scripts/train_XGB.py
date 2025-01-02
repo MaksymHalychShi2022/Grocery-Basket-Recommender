@@ -4,21 +4,17 @@ from datetime import datetime
 
 import autorootcwd  # noqa
 import joblib
-import pandas as pd
 from sklearn.metrics import f1_score, precision_score, recall_score
 from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier
 
-from config import RAW_DATA_PATH, MODELS_PATH
+from config import MODELS_PATH
 from scripts.utils import load_train_dataset
+
+MODELS_PATH = os.path.join(MODELS_PATH, 'xgboost')
 
 # Ensure the output directory exists
 os.makedirs(MODELS_PATH, exist_ok=True)
-# %%
-print("Loading orders...")
-orders = pd.read_csv(os.path.join(RAW_DATA_PATH, 'orders.csv'))
-order_products_train = pd.read_csv(os.path.join(RAW_DATA_PATH, 'order_products__train.csv'))
-
 # %%
 print("Loading dataset...")
 df = load_train_dataset()
@@ -27,7 +23,6 @@ X = df.drop(['reordered'], axis=1)
 y = df['reordered']
 
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
-
 # %%
 print("Training model...")
 model = XGBClassifier(

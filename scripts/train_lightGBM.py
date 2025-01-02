@@ -11,6 +11,8 @@ from sklearn.model_selection import train_test_split
 from config import MODELS_PATH
 from scripts.utils import load_train_dataset
 
+MODELS_PATH = os.path.join(MODELS_PATH, 'lightgbm')
+
 # Ensure the output directory exists
 os.makedirs(MODELS_PATH, exist_ok=True)
 # %%
@@ -21,7 +23,6 @@ X = df.drop(['reordered'], axis=1)
 y = df['reordered']
 
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
-
 # %%
 print("Training model...")
 model = LGBMClassifier(
@@ -54,6 +55,6 @@ print(f"Recall: {recall:.4f}")
 
 # %%
 print("Saving model...")
-save_path = os.path.join(MODELS_PATH, f"model_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pkl")
+save_path = os.path.join(MODELS_PATH, "", f"model_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pkl")
 joblib.dump(model, save_path)
 print(f"Model saved as {save_path}.")
