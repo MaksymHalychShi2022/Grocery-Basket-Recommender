@@ -85,6 +85,8 @@ def load_features() -> pd.DataFrame:
 		p_features, on='product_id', how='left'
 	)
 
+	features.fillna(0, inplace=True)
+
 	return features
 
 
