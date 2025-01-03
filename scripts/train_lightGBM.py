@@ -50,9 +50,9 @@ grid_search = GridSearchCV(
     estimator=base_model,
     param_grid=param_grid,
     scoring='f1',  # Optimize for F1 score
-    cv=5,
+    cv=2,
     verbose=1, 
-    n_jobs=4 # Use all available cores
+    n_jobs=4 # -1 to use all available cores
 )
 
 # %%
@@ -77,3 +77,21 @@ print("Saving model...")
 save_path = os.path.join(MODELS_PATH, "", f"model_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pkl")
 joblib.dump(best_model, save_path)
 print(f"Model saved as {save_path}.")
+
+
+
+# # 1. Load the saved model
+# saved_model_path = "models/lightgbm/model_20250103_214553.pkl"  # Replace with your actual path
+# loaded_model = joblib.load(saved_model_path)
+
+# # 2. Generate predictions
+# y_pred_loaded = loaded_model.predict(X_val)
+
+# # 3. Calculate metrics
+# f1_loaded = f1_score(y_val, y_pred_loaded)
+# precision_loaded = precision_score(y_val, y_pred_loaded)
+# recall_loaded = recall_score(y_val, y_pred_loaded)
+
+# print(f"F1 Score (Loaded Model): {f1_loaded:.4f}")
+# print(f"Precision (Loaded Model): {precision_loaded:.4f}")
+# print(f"Recall (Loaded Model): {recall_loaded:.4f}")

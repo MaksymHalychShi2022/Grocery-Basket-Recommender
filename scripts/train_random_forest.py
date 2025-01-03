@@ -32,14 +32,15 @@ X = df.drop(['reordered'], axis=1)
 y = df['reordered']
 
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)  # %%
+
 print("Training model...")
 
 param_grid = {
     'n_estimators': [50, 100],  
-    'max_depth': [4, 6],       
+    'max_depth': [5, 7],       
     'class_weight': ['balanced'],
-    'min_samples_split': [2],
-    'min_samples_leaf': [1, 2]
+    'min_samples_split': [2, 5],
+    'min_samples_leaf': [1, 2, 5]
 }
 
 base_model = RandomForestClassifier(random_state=42)
@@ -50,7 +51,7 @@ grid_search = GridSearchCV(
     scoring='f1', 
     cv=2,
     verbose=3, 
-    n_jobs=-1 # Use all available cores
+    n_jobs=4 # -1 to use all available cores
 )
 
 # %%
@@ -75,3 +76,20 @@ save_path = os.path.join(MODELS_PATH, f"model_{datetime.now().strftime('%Y%m%d_%
 joblib.dump(best_model, save_path)
 print(f"Model saved as {save_path}.")
 # %%
+
+
+# # 1. Load the saved model
+# saved_model_path = "models/random_forest/model_20250103_221724.pkl"  # Replace with your actual path
+# loaded_model = joblib.load(saved_model_path)
+
+# # 2. Generate predictions
+# y_pred_loaded = loaded_model.predict(X_val)
+
+# # 3. Calculate metrics
+# f1_loaded = f1_score(y_val, y_pred_loaded)
+# precision_loaded = precision_score(y_val, y_pred_loaded)
+# recall_loaded = recall_score(y_val, y_pred_loaded)
+
+# print(f"F1 Score (Loaded Model): {f1_loaded:.4f}")
+# print(f"Precision (Loaded Model): {precision_loaded:.4f}")
+# print(f"Recall (Loaded Model): {recall_loaded:.4f}")
