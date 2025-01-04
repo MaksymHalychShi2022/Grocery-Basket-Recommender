@@ -2,6 +2,10 @@
 \usepackage{titling}   % Allows modifying the title, author, and date presentation
 \usepackage{libertine} % also loads fontspec
 \usepackage[a4paper, margin=3.75cm]{geometry}  % Sets page size and margins
+% Remove "Chapter X" text from chapter titles
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}{}{0pt}{\Huge}
 
 % Custom pretitle, posttitle, preauthor, postauthor, and predates
 \pretitle{%
@@ -17,7 +21,7 @@
   \end{center}  % End centering
 
   \begin{center}
-  \includegraphics[width=5cm]{logo}\\[\bigskipamount] % Logo under the institution name, centered
+  \includegraphics[width=5cm]{assets/logo}\\[\bigskipamount] % Logo under the institution name, centered
   \Huge \bfseries  % Title in large bold text
 }
 \posttitle{\par\end{center}}

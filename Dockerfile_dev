@@ -38,6 +38,8 @@ RUN apt-get update && apt-get install -y \
     texlive-fonts-recommended \
     texlive-fonts-extra \
     texlive-xetex \
+    texlive-bibtex-extra \
+    biber \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory

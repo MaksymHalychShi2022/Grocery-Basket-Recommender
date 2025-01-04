@@ -20,7 +20,7 @@ Run dev-container
 docker run -it --rm -v $(pwd):/Grocery-Basket-Recommender --net=host gbr-dev
 ```
 
-Once in container, you can run this command to create `pdf` file of report
+Once in container, change directory to `quarto/`, and now you can run this command to create `pdf` file of report
 
 ```bash
 quarto render report.qmd
