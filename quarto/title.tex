@@ -1,0 +1,49 @@
+\usepackage{graphicx}  % Allows including images
+\usepackage{titling}   % Allows modifying the title, author, and date presentation
+\usepackage{libertine} % also loads fontspec
+\usepackage[a4paper, margin=3.75cm]{geometry}  % Sets page size and margins
+% Remove "Chapter X" text from chapter titles
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}{}{0pt}{\Huge}
+
+% Custom pretitle, posttitle, preauthor, postauthor, and predates
+\pretitle{%
+  \vspace*{-4cm}  % Pulls the content upwards
+  \begin{center}  % Start centering
+  \LARGE \bfseries {{< meta params.ministry >}}\\
+  \vspace{0.5cm}  % Adds vertical space
+
+  \LARGE \bfseries {{< meta params.institution >}}\\
+  \vspace{4cm}  % Adds vertical space
+
+  \LARGE \bfseries {{< meta params.department >}}
+  \end{center}  % End centering
+
+  \begin{center}
+  \includegraphics[width=5cm]{assets/logo}\\[\bigskipamount] % Logo under the institution name, centered
+  \Huge \bfseries  % Title in large bold text
+}
+\posttitle{\par\end{center}}
+
+% Author information centered below the title
+\preauthor{%
+  \vspace*{2cm}  % Adds vertical space
+  \begin{flushright}
+  {\LARGE \textbf{Виконали:}}\\
+  \Large Студенти Групи {{< meta params.group >}}\\
+}
+\postauthor{%
+  \\
+  {\LARGE \textbf{Викладач:}}\\
+  {\Large {{< meta params.lecturer >}}}\\
+  \par\end{flushright}
+}
+
+% Move the date to the bottom of the page
+\predate{%
+  \vfill  % Pushes the date to the bottom of the page
+  \begin{center}
+  \large
+}
+\postdate{\par\end{center}}
